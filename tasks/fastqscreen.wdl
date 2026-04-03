@@ -22,9 +22,8 @@ task fastq_screen {
 
 	runtime {
 		docker:docker
-		cluster: cluster_config
-		systemDisk: "cloud_ssd 40"
-		dataDisk: "cloud_ssd " + disk_size + " /cromwell_root/"
+		instanceTypes: [cluster]
+		systemDisk: "cloud " + disk_size
 	}
 	
 	output {

@@ -63,13 +63,39 @@ workflow {{ project_name }} {
 		}
 	}
 
+	call fastp.fastp as fastp {
+		input: 
+		sample_id=sample_id, 
+		read1 = fastq_1, 
+		read2 = fastq_2,
+		docker = fastp_docker,
+		cluster = fastp_cluster,
+		disk_size = disk_size,
+		adapter_sequence = adapter_sequence,
+		adapter_sequence_r2 = adapter_sequence_r2,
+		umi_loc = umi_loc,
+		trim_front1 = trim_front1,
+		trim_tail1 = trim_tail1, 
+		max_len1  = max_len1,
+		trim_front2  = trim_front2,
+		trim_tail2   = trim_tail2,
+		max_len2  = max_len2,
+		disable_adapter_trimming = disable_adapter_trimming,
+		length_required = length_required,
+		umi_len = umi_len,
+		UMI = UMI,
+		qualified_quality_phred = qualified_quality_phred,
+		length_required1 = length_required1,
+		disable_quality_filtering = disable_quality_filtering
+		}
+
 	call mapping.mapping as mapping {
 		input: 
 		pl=pl,
 		fasta=fasta,
 		ref_dir=ref_dir,
-		fastq_1=fastq_1,
-		fastq_2=fastq_2,
+		fastq_1=fastp.Trim_R1,
+		fastq_2=fastp.Trim_R2,
 		sample_id=sample_id,
 		docker=REPLACE_SENTIEON_DOCKER,
 		disk_size=disk_size,
@@ -78,8 +104,8 @@ workflow {{ project_name }} {
 
 	call fastqc.fastqc as fastqc {
 		input:
-		read1=fastq_1,
-		read2=fastq_2,
+		read1=fastp.Trim_R1,
+		read2=fastp.Trim_R2,
 		sample_id=sample_id,
 		docker=FASTQCdocker,
 		cluster_config=MEDcluster_config,
@@ -88,8 +114,8 @@ workflow {{ project_name }} {
 
 	call fastqscreen.fastq_screen as fastqscreen {
 		input:
-		read1=fastq_1,
-		read2=fastq_2,
+		read1=fastp.Trim_R1,
+		read2=fastp.Trim_R2,
 		sample_id=sample_id,
 		screen_ref_dir=screen_ref_dir,
 		fastq_screen_conf=fastq_screen_conf,
