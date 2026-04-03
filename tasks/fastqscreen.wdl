@@ -22,7 +22,7 @@ task fastq_screen {
 
 	runtime {
 		docker:docker
-		instanceTypes: [cluster]
+		instanceTypes: [cluster_config]
 		systemDisk: "cloud " + disk_size
 	}
 	

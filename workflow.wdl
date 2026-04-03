@@ -5,7 +5,8 @@ import "./tasks/deduped_Metrics.wdl" as deduped_Metrics
 import "./tasks/Realigner.wdl" as Realigner
 import "./tasks/BQSR.wdl" as BQSR
 import "./tasks/Haplotyper.wdl" as Haplotyper
-import "./tasks/fastqc.wdl" as fastqc
+import "./tasks/fastqc.wdl" as 
+import "./tasks/fastp.wdl" as fastp
 import "./tasks/fastqscreen.wdl" as fastqscreen
 import "./tasks/filter_vcf.wdl" as filter_vcf
 import "./tasks/bed_to_interval_list.wdl" as bed_to_interval_list
