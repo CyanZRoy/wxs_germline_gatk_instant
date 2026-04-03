@@ -5,7 +5,7 @@ import "./tasks/deduped_Metrics.wdl" as deduped_Metrics
 import "./tasks/Realigner.wdl" as Realigner
 import "./tasks/BQSR.wdl" as BQSR
 import "./tasks/Haplotyper.wdl" as Haplotyper
-import "./tasks/fastqc.wdl" as 
+import "./tasks/fastqc.wdl" as fastqc
 import "./tasks/fastp.wdl" as fastp
 import "./tasks/fastqscreen.wdl" as fastqscreen
 import "./tasks/filter_vcf.wdl" as filter_vcf
@@ -27,6 +27,24 @@ workflow {{ project_name }} {
 	String PICARDdocker
 	String annovar_docker
 
+	String fastp_docker
+	String adapter_sequence
+	String adapter_sequence_r2
+	String fastp_cluster
+	String umi_loc
+	Int trim_front1 
+	Int trim_tail1 
+	Int max_len1 
+	Int trim_front2 
+	Int trim_tail2  
+	Int max_len2 
+	Int disable_adapter_trimming
+	Int length_required
+	Int umi_len
+	Int UMI
+	Int qualified_quality_phred
+	Int length_required1
+	Int disable_quality_filtering
 	String fasta
 	File ref_dir
 	File dbmills_dir
