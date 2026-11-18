@@ -11,14 +11,23 @@ task bed_to_interval_list {
 
 
 	command <<<
-       mkdir -p /cromwell_root/tmp
-       cp ${ref_dir}/${fasta} /cromwell_root/tmp/
-       cp ${reference_bed_dict} /cromwell_root/tmp/          
+	       set -e
+	       call_dir="$PWD"
+	       copy_task_logs() {
+	           cp -f "$call_dir/script" "$call_dir/script.txt" 2>/dev/null || true
+	           cp -f "$call_dir/stdout" "$call_dir/stdout.txt" 2>/dev/null || true
+	           cp -f "$call_dir/stderr" "$call_dir/stderr.txt" 2>/dev/null || true
+	       }
+	       trap copy_task_logs EXIT
+	       local_work=$(mktemp -d /tmp/bedinterval.XXXXXX)
+	       cp -f ${bed} "$local_work/input.bed"
+	       cd "$local_work"
                   
        java -jar /usr/picard/picard.jar BedToIntervalList \
-       I=${bed} \
+	       I=input.bed \
        O=${interval_list_name}.txt \
-       SD=/cromwell_root/tmp/GRCh38.d1.vd1.dict
+	       SD=${reference_bed_dict}
+	       cp -f ${interval_list_name}.txt "$call_dir/"
 	>>>
 
 	runtime {

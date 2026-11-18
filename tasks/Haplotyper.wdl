@@ -12,6 +12,19 @@ task Haplotyper {
 command <<<
 		set -o pipefail
 		set -e
+		call_dir="$PWD"
+		copy_task_logs() {
+			cp -f "$call_dir/script" "$call_dir/script.txt" 2>/dev/null || true
+			cp -f "$call_dir/stdout" "$call_dir/stdout.txt" 2>/dev/null || true
+			cp -f "$call_dir/stderr" "$call_dir/stderr.txt" 2>/dev/null || true
+		}
+		trap copy_task_logs EXIT
+		local_work=$(mktemp -d /tmp/haplotyper.XXXXXX)
+		mkdir -p "$local_work/tmp"
+		export TMPDIR="$local_work/tmp"
+		cp -f ${recaled_bam} "$local_work/input.bam"
+		cp -f ${recaled_bam_index} "$local_work/input.bam.bai"
+		cd "$local_work"
 
 		if [ ${bed} ]; then
 			MODELTYPE="WES"
@@ -22,9 +35,10 @@ command <<<
 		/opt/deepvariant/bin/run_deepvariant \
 			--model_type=$MODELTYPE \
 			--ref=${ref_dir}/${fasta} \
-			--reads=${recaled_bam} \
+			--reads=input.bam \
 			--output_vcf=${sample_id}_hc.vcf \
 			--num_shards=$(nproc) 
+		cp -f ${sample_id}_hc.vcf "$call_dir/"
 	>>>
 	
 	runtime {

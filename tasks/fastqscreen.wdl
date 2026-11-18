@@ -14,10 +14,24 @@ task fastq_screen {
 		set -o pipefail
 		set -e
 		nt=$(nproc)
-		mkdir -p /cromwell_root/tmp
-		cp -r ${screen_ref_dir} /cromwell_root/tmp/
-		fastq_screen --aligner bowtie2 --conf ${fastq_screen_conf} --subset 1000000 --threads $nt ${read1}
-		fastq_screen --aligner bowtie2 --conf ${fastq_screen_conf} --subset 1000000 --threads $nt ${read2}
+		call_dir="$PWD"
+		copy_task_logs() {
+			cp -f "$call_dir/script" "$call_dir/script.txt" 2>/dev/null || true
+			cp -f "$call_dir/stdout" "$call_dir/stdout.txt" 2>/dev/null || true
+			cp -f "$call_dir/stderr" "$call_dir/stderr.txt" 2>/dev/null || true
+		}
+		trap copy_task_logs EXIT
+		local_work=$(mktemp -d /tmp/fastqscreen.XXXXXX)
+		mkdir -p "$local_work/tmp"
+		export TMPDIR="$local_work/tmp"
+		cp -f ${read1} "$local_work/$(basename ${read1})"
+		cp -f ${read2} "$local_work/$(basename ${read2})"
+		sed "s#/cromwell_root/tmp/fastq_screen_reference#${screen_ref_dir}#g" \
+			${fastq_screen_conf} > "$local_work/fastq_screen.conf"
+		cd "$local_work"
+		fastq_screen --aligner bowtie2 --conf fastq_screen.conf --subset 1000000 --threads $nt "$(basename ${read1})"
+		fastq_screen --aligner bowtie2 --conf fastq_screen.conf --subset 1000000 --threads $nt "$(basename ${read2})"
+		cp -f *_screen.png *_screen.txt *_screen.html "$call_dir/"
 	>>>
 
 	runtime {
