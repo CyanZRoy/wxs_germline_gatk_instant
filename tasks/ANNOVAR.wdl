@@ -30,7 +30,7 @@ task ANNOVAR {
     /installations/annovar/table_annovar.pl input.vcf \
     ${annovar_database} -buildver ${hg} \
     -out ${basename} -remove \
-    -protocol refGene,ensGene,knownGene,cytoBand,genomicSuperDups,esp6500siv2_all,ALL.sites.2015_08,AFR.sites.2015_08,AMR.sites.2015_08,EAS.sites.2015_08,EUR.sites.2015_08,SAS.sites.2015_08,avsnp147,dbnsfp33a,clinvar_20210501,gnomad_genome,dbscsnv11,dbnsfp31a_interpro \
+    -protocol refGene,ensGene,knownGene,cytoBand,genomicSuperDups,esp6500siv2_all,ALL.sites.2015_08,AFR.sites.2015_08,AMR.sites.2015_08,EAS.sites.2015_08,EUR.sites.2015_08,SAS.sites.2015_08,avsnp150,dbnsfp42c,clinvar_20220320,gnomad30_genome,dbscsnv11,dbnsfp31a_interpro \
     -operation g,g,g,r,r,f,f,f,f,f,f,f,f,f,f,f,f,f \
     -nastring . -vcfinput -thread $nt
     fi
@@ -39,7 +39,7 @@ task ANNOVAR {
     /installations/annovar/table_annovar.pl input.vcf \
     ${annovar_database} -buildver ${hg} \
     -out ${basename} -remove \
-    -protocol refGene,cytoBand,genomicSuperDups,ljb26_all,snp138,cosmic78,intervar_20170202,popfreq_all_20150413,clinvar_20190305 \
+    -protocol refGene,cytoBand,genomicSuperDups,dbnsfp42c,avsnp150,cosmic78,intervar_20180118,popfreq_all_20150413,clinvar_20240917 \
     -operation g,r,r,f,f,f,f,f,f \
     -nastring . -vcfinput -thread $nt
     fi
